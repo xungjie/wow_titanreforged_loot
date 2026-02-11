@@ -1,0 +1,21 @@
+﻿## Interface: 38000
+## Author: Lag
+## Version: v3.0.2
+## Dependencies: AtlasLootMY
+## LoadOnDemand: 1
+## Title: AtlasLootClassic -Titan |cFF0099FF[Collections]|r
+## Title-zhCN: 喵影掉落插件 |cFF0099FF[收藏品]|r
+## Title-zhTW: 副本戰利品查詢喵影版 |cFF0099FF[收藏]|r
+## Notes: AtlasLoot loot tables from Collections
+## Notes-zhCN: 收藏物品资料库。
+## Notes-zhTW: 收藏物品資料庫。
+## X-Category: Map
+## X-AtlasLootMY-LootModule: 1
+
+
+Locales\Locales.xml
+
+private.lua
+data.lua
+data-tbc.lua
+data-wrath.lua

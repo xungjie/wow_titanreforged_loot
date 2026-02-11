@@ -1,0 +1,9 @@
+## Interface: 38000
+## Title: AtlasMY |r|cFF0099FF[Burning Crusade]|r
+## Title-zhCN: AtlasMY |r|cFF0099FF燃烧远征副本地图|r
+## Title-zhTW: AtlasMY |r|cFF0099FF燃燒遠征副本地圖|r
+## Notes: |cff00ff00Atlas_BurningCrusade|r
+## Version: v1.50.02
+## Author: arith, Dynaletik, dubcat
+## Dependencies: AtlasLootMY
+

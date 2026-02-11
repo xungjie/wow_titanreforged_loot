@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>时光泰坦重铸 副本掉落查询</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at top, #1b1b2f 0, #050509 45%, #020308 100%);
+      color: #f5f4e8;
+    }
+
+    .page-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 16px;
+    }
+
+    .panel {
+      width: 100%;
+      max-width: 1200px;
+      background: rgba(5, 4, 10, 0.92);
+      border: 2px solid #c79c37;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.85);
+      padding: 24px 28px 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before,
+    .panel::after {
+      content: "";
+      position: absolute;
+      border: 1px solid rgba(255, 215, 128, 0.45);
+      pointer-events: none;
+    }
+
+    .panel::before {
+      inset: 8px;
+      border-radius: 6px;
+    }
+
+    .panel::after {
+      inset: 0;
+      border-width: 0 0 2px 0;
+      border-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .title {
+      font-size: 22px;
+      color: #ffd100;
+      text-align: center;
+      margin: 0 0 10px;
+      letter-spacing: 1px;
+      text-shadow: 0 0 8px rgba(0, 0, 0, 0.9);
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 13px;
+      color: #c0b89a;
+      margin-bottom: 18px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+      justify-content: center;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      min-width: 220px;
+    }
+
+    .control-label {
+      font-size: 12px;
+      color: #e3dfc6;
+      margin-bottom: 4px;
+    }
+
+    .control-input,
+    .control-select {
+      background: rgba(10, 8, 20, 0.95);
+      border: 1px solid #c79c37;
+      color: #f5f4e8;
+      padding: 6px 10px;
+      border-radius: 4px;
+      outline: none;
+      font-size: 13px;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+    }
+
+    .control-input:focus,
+    .control-select:focus {
+      border-color: #f8e39a;
+      box-shadow: 0 0 6px rgba(248, 227, 154, 0.65);
+      background: rgba(18, 14, 35, 0.98);
+    }
+
+    .table-wrapper {
+      margin-top: 8px;
+      border: 1px solid #c79c37;
+      border-radius: 4px;
+      background: linear-gradient(180deg, #070611, #05040b);
+      max-height: 540px;
+      overflow: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      min-width: 800px;
+    }
+
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    thead tr {
+      background: linear-gradient(180deg, #403016, #24170a);
+    }
+
+    th,
+    td {
+      padding: 6px 8px;
+      border-bottom: 1px solid rgba(70, 58, 32, 0.7);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      color: #ffe8b3;
+      font-weight: 600;
+      border-right: 1px solid rgba(120, 95, 45, 0.8);
+    }
+
+    th:last-child,
+    td:last-child {
+      border-right: none;
+    }
+
+    tbody tr:nth-child(even) {
+      background: rgba(20, 13, 32, 0.75);
+    }
+
+    tbody tr:nth-child(odd) {
+      background: rgba(9, 7, 18, 0.9);
+    }
+
+    tbody tr:hover {
+      background: rgba(80, 60, 30, 0.65);
+    }
+
+    .instance-name {
+      color: #ffd100;
+    }
+
+    .boss-name {
+      color: #f0e6d2;
+    }
+
+    .item-name {
+      font-weight: 600;
+      cursor: default;
+    }
+
+    .item-epic {
+      color: #a335ee; /* 史诗 紫色 */
+    }
+
+    .item-rare {
+      color: #0070dd; /* 精良 蓝色 */
+    }
+
+    .quality-epic {
+      color: #a335ee;
+    }
+
+    .quality-rare {
+      color: #0070dd;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(40, 32, 18, 0.9);
+      border: 1px solid rgba(199, 156, 55, 0.65);
+      font-size: 11px;
+      color: #e3dfc6;
+    }
+
+    .footer-note {
+      margin-top: 10px;
+      font-size: 11px;
+      color: #9a9278;
+      text-align: right;
+    }
+
+    @media (max-width: 768px) {
+      .panel {
+        padding: 16px 14px 20px;
+      }
+      .title {
+        font-size: 18px;
+      }
+      .subtitle {
+        font-size: 12px;
+      }
+      .control-group {
+        min-width: 100%;
+      }
+      table {
+        font-size: 12px;
+        min-width: 700px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <div class="panel">
+      <h1 class="title">时光泰坦重铸 副本掉落总览</h1>
+      <div class="subtitle">
+        Altasloot 全量掉落（物品属性通过 Wowhead 联网联动，仅在联网环境下生效）
+      </div>
+
+      <div class="controls">
+        <div class="control-group">
+          <label class="control-label" for="searchInput">装备名称搜索</label>
+          <input
+            id="searchInput"
+            class="control-input"
+            type="text"
+            placeholder="输入装备名称关键字（支持模糊匹配）"
+          />
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="classSelect">按职业筛选可用掉落</label>
+          <select id="classSelect" class="control-select">
+            <option value="">全部职业</option>
+            <option value="Warrior">战士</option>
+            <option value="Paladin">圣骑士</option>
+            <option value="Hunter">猎人</option>
+            <option value="Rogue">潜行者</option>
+            <option value="Priest">牧师</option>
+            <option value="Shaman">萨满祭司</option>
+            <option value="Mage">法师</option>
+            <option value="Warlock">术士</option>
+            <option value="Druid">德鲁伊</option>
+            <option value="Death Knight">死亡骑士</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>副本</th>
+              <th>Boss</th>
+              <th>物品名称</th>
+              <th>品质</th>
+              <th>物品等级</th>
+              <th>适用职业</th>
+              <th>备注</th>
+            </tr>
+          </thead>
+          <tbody id="lootTableBody">
+            <!-- JS 动态填充 -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="footer-note">
+        注：部分为示例数据，完整掉落可按同格式自行补充到脚本中。
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 从 Altasloot 源数据动态读取并转换为前端用的掉落表
+    let lootData = [];
+
+    async function loadAtlasLootData() {
+      const tbody = document.getElementById("lootTableBody");
+      if (!tbody) return;
+
+      // 简单的“加载中”提示
+      tbody.innerHTML = "";
+      const loadingTr = document.createElement("tr");
+      const loadingTd = document.createElement("td");
+      loadingTd.colSpan = 7;
+      loadingTd.style.textAlign = "center";
+      loadingTd.style.padding = "14px 8px";
+      loadingTd.textContent = "正在从 Altasloot 读取数据，请稍候……";
+      loadingTr.appendChild(loadingTd);
+      tbody.appendChild(loadingTr);
+
+      try {
+        const res = await fetch("Altasloot/AtlasLootMY_Data/source.lua");
+        const text = await res.text();
+
+        // 解析 ["AtlasLootIDs"] 区块，拿到副本 ID 列表
+        const atlasIdsMatch = text.match(/\["AtlasLootIDs"\]\s*=\s*\{([\s\S]*?)\}/);
+        const atlasIds = [];
+        if (atlasIdsMatch) {
+          const idsBody = atlasIdsMatch[1];
+          let m;
+          const regex = /"([^"]+)"/g;
+          while ((m = regex.exec(idsBody)) !== null) {
+            atlasIds.push(m[1]);
+          }
+        }
+
+        // 解析 ["ItemData"] 主体
+        const itemDataMatch = text.match(/\["ItemData"\]\s*=\s*\{([\s\S]*?)\n\}/);
+        if (!itemDataMatch) {
+          throw new Error("未在 source.lua 中找到 ItemData 块");
+        }
+        const itemBody = itemDataMatch[1];
+
+        const lineRegex = /\[(\d+)\]\s*=\s*(\{[\s\S]*?\}),?/g;
+        let match;
+        const parsed = [];
+
+        while ((match = lineRegex.exec(itemBody)) !== null) {
+          const itemId = parseInt(match[1], 10);
+          const raw = match[2].trim();
+
+          // 这里只做非常粗略的结构解析：
+          // 1. {8,9,1} 这种：取第一个数字做副本下标，第二个数字做 Boss 编号
+          // 2. {{10,3,1},{11,2,1}} 这种：取第一组
+          let tupleText = raw;
+          if (tupleText.startsWith("{{")) {
+            // 形如 {{10,3,1},{11,2,1}}
+            const firstTuple = tupleText.match(/\{\s*([^{}]+?)\s*[,}]/);
+            if (!firstTuple) continue;
+            tupleText = "{" + firstTuple[1] + "}";
+          }
+
+          const nums = [];
+          const numRegex = /(-?\d+)/g;
+          let nm;
+          while ((nm = numRegex.exec(tupleText)) !== null) {
+            nums.push(parseInt(nm[1], 10));
+          }
+
+          if (nums.length < 2) continue;
+
+          const instIdx = nums[0]; // Lua 从 1 开始
+          const bossIdx = nums[1];
+          const instanceKey =
+            instIdx >= 1 && instIdx <= atlasIds.length
+              ? atlasIds[instIdx - 1]
+              : `UnknownInstance#${instIdx}`;
+
+          parsed.push({
+            instance: instanceKey,
+            boss: `Boss #${bossIdx}`,
+            itemId,
+          });
+        }
+
+        // 将解析结果转换成表格需要的结构
+        lootData = parsed.map((row) => ({
+          instance: row.instance,
+          boss: row.boss,
+          itemId: row.itemId,
+          itemName: `物品ID ${row.itemId}`,
+          quality: "epic",
+          itemLevel: "—",
+          classes: [],
+          note: `Altasloot ID: ${row.itemId}`,
+        }));
+      } catch (e) {
+        console.error(e);
+        tbody.innerHTML = "";
+        const errTr = document.createElement("tr");
+        const errTd = document.createElement("td");
+        errTd.colSpan = 7;
+        errTd.style.textAlign = "center";
+        errTd.style.padding = "14px 8px";
+        errTd.textContent =
+          "读取 Altasloot 数据失败，请确认目录结构（需有 Altasloot/AtlasLootMY_Data/source.lua）。";
+        errTr.appendChild(errTd);
+        tbody.appendChild(errTr);
+        return;
+      }
+
+      // 数据准备好后重新渲染表格
+      renderTable();
+    }
+
+    const tbody = document.getElementById("lootTableBody");
+    const searchInput = document.getElementById("searchInput");
+    const classSelect = document.getElementById("classSelect");
+
+    function renderTable() {
+      const keyword = searchInput.value.trim().toLowerCase();
+      const selectedClass = classSelect.value;
+
+      tbody.innerHTML = "";
+
+      const filtered = lootData.filter((item) => {
+        const nameMatch =
+          !keyword ||
+          item.itemName.toLowerCase().includes(keyword) ||
+          item.boss.toLowerCase().includes(keyword) ||
+          item.instance.toLowerCase().includes(keyword);
+
+        const classMatch =
+          !selectedClass ||
+          (Array.isArray(item.classes) &&
+            item.classes.some((c) =>
+              c.toLowerCase().includes(selectedClass.toLowerCase())
+            ));
+
+        return nameMatch && classMatch;
+      });
+
+      filtered.forEach((item) => {
+        const tr = document.createElement("tr");
+
+        const tdInstance = document.createElement("td");
+        tdInstance.textContent = item.instance;
+        tdInstance.className = "instance-name";
+        tr.appendChild(tdInstance);
+
+        const tdBoss = document.createElement("td");
+        tdBoss.textContent = item.boss;
+        tdBoss.className = "boss-name";
+        tr.appendChild(tdBoss);
+
+        const tdItem = document.createElement("td");
+        const itemLink = document.createElement("a");
+        const itemId = item.itemId;
+
+        itemLink.textContent = item.itemName;
+        itemLink.classList.add("item-name");
+        itemLink.href = itemId
+          ? `https://www.wowhead.com/classic/item=${itemId}`
+          : "javascript:void(0)";
+        itemLink.target = "_blank";
+
+        // Wowhead tooltip 联动（依赖下面引入的 power.js）
+        if (itemId) {
+          itemLink.setAttribute("data-wowhead", `item=${itemId}`);
+        }
+
+        if (item.quality === "epic") {
+          itemLink.classList.add("item-epic");
+        } else if (item.quality === "rare") {
+          itemLink.classList.add("item-rare");
+        }
+
+        tdItem.appendChild(itemLink);
+        tr.appendChild(tdItem);
+
+        const tdQuality = document.createElement("td");
+        tdQuality.textContent = item.quality === "epic" ? "史诗" : "精良";
+        tdQuality.classList.add(
+          item.quality === "epic" ? "quality-epic" : "quality-rare"
+        );
+        tr.appendChild(tdQuality);
+
+        const tdIlvl = document.createElement("td");
+        tdIlvl.textContent =
+          typeof item.itemLevel === "number" ? item.itemLevel : "—";
+        tr.appendChild(tdIlvl);
+
+        const tdClasses = document.createElement("td");
+        tdClasses.textContent = Array.isArray(item.classes)
+          ? item.classes.join(", ")
+          : "";
+        tr.appendChild(tdClasses);
+
+        const tdNote = document.createElement("td");
+        if (item.note) {
+          const tag = document.createElement("span");
+          tag.className = "tag";
+          tag.textContent = item.note;
+          tdNote.appendChild(tag);
+        }
+        tr.appendChild(tdNote);
+
+        tbody.appendChild(tr);
+      });
+
+      if (filtered.length === 0) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 7;
+        td.style.textAlign = "center";
+        td.style.padding = "14px 8px";
+        td.textContent = "当前筛选条件下没有找到掉落数据。";
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+      }
+    }
+
+    searchInput.addEventListener("input", renderTable);
+    classSelect.addEventListener("change", renderTable);
+
+    // 页面加载后，先从 Altasloot 读取数据，再渲染表格
+    window.addEventListener("DOMContentLoaded", () => {
+      loadAtlasLootData();
+    });
+  </script>
+
+  <!-- Wowhead Tooltip 联动脚本（需外网环境） -->
+  <script>
+    // 仅示例常用配置，可按需调整
+    var whTooltips = {
+      colorLinks: true,
+      iconizeLinks: true,
+      renameLinks: false,
+      // 指向怀旧服，如果需要别的版本可以改成 https://www.wowhead.com/
+      wowheadUrl: "https://www.wowhead.com/classic",
+    };
+  </script>
+  <script src="https://wow.zamimg.com/widgets/power.js"></script>
+</body>
+</html>

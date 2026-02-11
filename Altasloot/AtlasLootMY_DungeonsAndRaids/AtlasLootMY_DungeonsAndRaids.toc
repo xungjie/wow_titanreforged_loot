@@ -1,0 +1,20 @@
+﻿## Interface: 38000
+## Author: Lag
+## Version: v3.0.0
+## Dependencies: AtlasLootMY
+## LoadOnDemand: 1
+## Title: AtlasLootClassic -Titan |cFF0099FF[Dungeons and Raids]|r
+## Title-zhCN: 喵影掉落插件 |cFF0099FF[地下城和团队]|r
+## Title-zhTW: 副本戰利品查詢喵影版 |cFF0099FF[地城和團隊]|r
+## Notes: AtlasLoot loot tables from Dungeons and Raids
+## Notes-zhCN: 地下城&团队副本掉落列表
+## Notes-zhTW: 地城和團隊物品資料庫。
+## X-Category: Map
+## X-AtlasLootMY-LootModule: 1
+
+Locales\Locales.xml
+
+data.lua
+data-tbc.lua
+data-wrath.lua
+droprate.lua

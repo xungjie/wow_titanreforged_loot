@@ -1,0 +1,21 @@
+## Interface: 38000
+## Author: Lag
+## Version: v3.0.0
+## Dependencies: AtlasLootMY
+## LoadOnDemand: 1
+## Title: AtlasLootClassic -Titan |cFF0099FF[Crafting]|r
+## Title-zhCN: 喵影掉落插件 |cFF0099FF[制造品]|r
+## Title-zhTW: 副本戰利品查詢喵影版 |cFF0099FF[專業製作]|r
+## Notes: AtlasLoot loot tables of Crafting Items
+## Notes-zhCN:专业制作物品列表
+## Notes-zhTW: 專業技能物品資料庫。
+## X-Category: Map
+## X-AtlasLootMY-LootModule: 1
+
+
+Locales\Locales.xml
+
+private.lua
+data.lua
+data-tbc.lua
+data-wrath.lua

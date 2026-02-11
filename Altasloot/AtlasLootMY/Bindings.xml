@@ -1,0 +1,6 @@
+<Bindings>
+	<Binding name="ATLASLOOTMY_TOGGLE" header="ATLASLOOTMY" category="BINDING_HEADER_ATLASLOOTMY">
+	
+		AtlasLootMY.SlashCommands:Run("")
+	</Binding>
+</Bindings>
