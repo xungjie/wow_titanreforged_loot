@@ -236,6 +236,78 @@
       text-align: right;
     }
 
+    /* Tooltip 样式 */
+    .tooltip-trigger {
+      cursor: help;
+      border-bottom: 1px dotted #c79c37;
+    }
+
+    .tooltip {
+      display: none;
+      position: fixed;
+      background: rgba(10, 8, 20, 0.98);
+      border: 2px solid #c79c37;
+      border-radius: 4px;
+      padding: 12px;
+      max-width: 350px;
+      z-index: 1000;
+      font-size: 12px;
+      color: #f5f4e8;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.9);
+    }
+
+    .tooltip-arrow {
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-style: solid;
+    }
+
+    .tooltip.show {
+      display: block;
+    }
+
+    .tooltip-title {
+      color: #ffd100;
+      font-weight: 600;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+
+    .tooltip-row {
+      display: flex;
+      margin: 4px 0;
+      padding: 2px 0;
+    }
+
+    .tooltip-label {
+      color: #c0b89a;
+      min-width: 80px;
+      font-weight: 500;
+    }
+
+    .tooltip-value {
+      color: #f5f4e8;
+      flex: 1;
+      margin-left: 8px;
+    }
+
+    .tooltip-divider {
+      border-top: 1px solid rgba(199, 156, 55, 0.3);
+      margin: 6px 0;
+    }
+
+    .tooltip-stat {
+      color: #1eff00;
+    }
+
+    .tooltip-equip {
+      color: #a335ee;
+      font-size: 11px;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
     @media (max-width: 768px) {
       .panel {
         padding: 16px 14px 20px;
@@ -323,6 +395,9 @@
       </div>
     </div>
   </div>
+
+  <!-- Tooltip 容器 -->
+  <div id="tooltip" class="tooltip"></div>
 
   <script>
     // 从 Altasloot 源数据动态读取并转换为前端用的掉落表
@@ -645,6 +720,8 @@
 
         itemLink.textContent = item.itemName;
         itemLink.classList.add("item-name");
+        itemLink.classList.add("tooltip-trigger");
+        itemLink.dataset.itemId = itemId;
         itemLink.href = itemId
           ? `https://wlk.scarlet5.com/?search=${itemId}`
           : "javascript:void(0)";
@@ -720,6 +797,218 @@
     // 页面加载后，先从 Altasloot 读取数据，再渲染表格
     window.addEventListener("DOMContentLoaded", () => {
       loadAtlasLootData();
+    });
+
+    // Tooltip 功能
+    const tooltip = document.getElementById("tooltip");
+    
+    function buildTooltipContent(itemData) {
+      const item = itemsDatabase[itemData.itemId] || itemsDatabase[itemData.itemId.toString()];
+      if (!item) return null;
+
+      const qualityColors = {
+        0: "#9d9d9d", // 粗糙 灰色
+        1: "#ffffff", // 普通 白色
+        2: "#1eff00", // 优秀 绿色
+        3: "#0070dd", // 精良 蓝色
+        4: "#a335ee", // 史诗 紫色
+        5: "#ff8000", // 传说 橙色
+        6: "#e6cc80", // 神器 金色
+        7: "#0070dd", // 传家宝 蓝色
+      };
+
+      const qualityColor = qualityColors[item.quality] || "#ffffff";
+
+      let html = `
+        <div style="color: ${qualityColor}; font-weight: 600; margin-bottom: 6px; font-size: 13px;">
+          ${item.nameCn || item.name}
+        </div>
+        <div class="tooltip-divider"></div>
+      `;
+
+      // 基本信息
+      if (item.itemLevel) {
+        html += `<div class="tooltip-row">
+          <div class="tooltip-label">物品等级:</div>
+          <div class="tooltip-value">${item.itemLevel}</div>
+        </div>`;
+      }
+
+      if (item.requiredLevel) {
+        html += `<div class="tooltip-row">
+          <div class="tooltip-label">需求等级:</div>
+          <div class="tooltip-value">${item.requiredLevel}</div>
+        </div>`;
+      }
+
+      if (item.allowableClassText) {
+        html += `<div class="tooltip-row">
+          <div class="tooltip-label">职业:</div>
+          <div class="tooltip-value">${item.allowableClassText}</div>
+        </div>`;
+      }
+
+      // 装备位置
+      const slots = {
+        0: "不装备",
+        1: "头部",
+        2: "颈部",
+        3: "肩部",
+        4: "衣服",
+        5: "胸甲",
+        6: "腰部",
+        7: "腿部",
+        8: "脚部",
+        9: "腕部",
+        10: "手部",
+        11: "手指",
+        12: "饰品",
+        13: "背部",
+        14: "主手",
+        15: "副手",
+        16: "远程",
+        17: "做工",
+        18: "徽章",
+        19: "副手",
+      };
+
+      if (item.inventoryType && slots[item.inventoryType]) {
+        html += `<div class="tooltip-row">
+          <div class="tooltip-label">位置:</div>
+          <div class="tooltip-value">${slots[item.inventoryType]}</div>
+        </div>`;
+      }
+
+      // 护甲
+      if (item.armor && item.armor > 0) {
+        html += `<div class="tooltip-row">
+          <div class="tooltip-label">护甲:</div>
+          <div class="tooltip-value tooltip-stat">+${item.armor}</div>
+        </div>`;
+      }
+
+      // 伤害
+      if (item.dmgMin1 && item.dmgMax1 && item.dmgMin1 > 0) {
+        html += `<div class="tooltip-row">
+          <div class="tooltip-label">伤害:</div>
+          <div class="tooltip-value tooltip-stat">${Math.round(item.dmgMin1)}-${Math.round(item.dmgMax1)}</div>
+        </div>`;
+      }
+
+      // 属性
+      const stats = [
+        { key: 'strength', name: '力量', icon: '⚔' },
+        { key: 'stamina', name: '体力', icon: '❤' },
+        { key: 'intellect', name: '智力', icon: '✦' },
+        { key: 'spirit', name: '精神', icon: '☮' },
+        { key: 'agility', name: '敏捷', icon: '⚡' },
+      ];
+
+      let statsHtml = '';
+      stats.forEach(stat => {
+        const value = item[stat.key];
+        if (value && value > 0) {
+          statsHtml += `<div class="tooltip-row">
+            <div class="tooltip-label">${stat.name}:</div>
+            <div class="tooltip-value tooltip-stat">+${value}</div>
+          </div>`;
+        }
+      });
+
+      if (statsHtml) {
+        html += statsHtml;
+      }
+
+      // 装备效果
+      if (item.itemSpellsStr && item.itemSpellsStr.trim()) {
+        html += `<div class="tooltip-divider"></div>`;
+        const spells = item.itemSpellsStr.split('_').filter(s => s.trim());
+        spells.forEach(spell => {
+          html += `<div class="tooltip-equip">
+            <strong>装备:</strong> ${spell.trim()}
+          </div>`;
+        });
+      }
+
+      // 套装信息
+      if (item.itemsetName) {
+        html += `<div class="tooltip-divider"></div>`;
+        html += `<div class="tooltip-row">
+          <div class="tooltip-label">套装:</div>
+          <div class="tooltip-value">${item.itemsetName}</div>
+        </div>`;
+        if (item.itemsetCount) {
+          html += `<div class="tooltip-row">
+            <div class="tooltip-label">套装数:</div>
+            <div class="tooltip-value">${item.itemsetCount}</div>
+          </div>`;
+        }
+      }
+
+      return html;
+    }
+
+    function showTooltip(e, itemData) {
+      const content = buildTooltipContent(itemData);
+      if (!content) return;
+
+      tooltip.innerHTML = content;
+      tooltip.classList.add("show");
+
+      // 获取鼠标位置
+      let x = e.pageX + 10;
+      let y = e.pageY + 10;
+
+      // 确保tooltip不超出窗口
+      if (x + 350 > window.innerWidth) {
+        x = window.innerWidth - 360;
+      }
+      if (y + 300 > window.innerHeight) {
+        y = e.pageY - 300;
+      }
+
+      tooltip.style.left = x + "px";
+      tooltip.style.top = y + "px";
+    }
+
+    function hideTooltip() {
+      tooltip.classList.remove("show");
+    }
+
+    // 为表格中的物品名称添加tooltip事件
+    document.addEventListener("mouseover", (e) => {
+      if (e.target.classList.contains("item-name")) {
+        const itemId = e.target.dataset.itemId;
+        if (itemId) {
+          const itemData = {
+            itemId: parseInt(itemId)
+          };
+          showTooltip(e, itemData);
+        }
+      }
+    });
+
+    document.addEventListener("mouseout", (e) => {
+      if (e.target.classList.contains("item-name")) {
+        hideTooltip();
+      }
+    });
+
+    document.addEventListener("mousemove", (e) => {
+      if (tooltip.classList.contains("show") && e.target.classList.contains("item-name")) {
+        let x = e.pageX + 10;
+        let y = e.pageY + 10;
+
+        if (x + 350 > window.innerWidth) {
+          x = window.innerWidth - 360;
+        }
+        if (y + 300 > window.innerHeight) {
+          y = e.pageY - 300;
+        }
+
+        tooltip.style.left = x + "px";
+        tooltip.style.top = y + "px";
+      }
     });
   </script>
 </body>
