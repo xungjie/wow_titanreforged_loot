@@ -817,14 +817,14 @@
         7: "#0070dd", // 传家宝 蓝色
       };
 
-      // WoW 属性类型映射 (基于item 32267规律)
-      // statType 4 = 力量, statType 7 = 耐力, statType 3 = 敏捷, statType 5 = 精神等
+      // WoW 属性类型映射 (基于实际物品数据)
+      // statType 4 = 力量, statType 7 = 耐力, statType 3 = 敏捷, statType 5 = 智力等
       const statTypeMap = {
         1: '力量',
         2: '敏捷',
         3: '敏捷',
         4: '力量',
-        5: '精神',
+        5: '智力',
         6: '精神',
         7: '耐力',
         8: '体力',
@@ -839,12 +839,12 @@
         25: '护盾值',
       };
 
-      // 插槽颜色映射
+      // 插槽颜色映射 (WoW标准)
       const socketColorMap = {
         1: '红色',
-        2: '红色',
+        2: '黄色',
         4: '蓝色',
-        8: '紫色/元素',
+        8: '紫色',
       };
 
       const qualityColor = qualityColors[item.quality] || "#ffffff";
@@ -987,6 +987,17 @@
       
       if (socketHtml) {
         html += `<div class="tooltip-divider"></div>` + socketHtml;
+      }
+
+      // Socket 奖励
+      if (item.socketBonusStr && item.socketBonusStr.trim()) {
+        if (!socketHtml) {
+          html += `<div class="tooltip-divider"></div>`;
+        }
+        html += `<div class="tooltip-row">
+          <div class="tooltip-label">插槽奖励:</div>
+          <div class="tooltip-value tooltip-stat">${item.socketBonusStr.trim()}</div>
+        </div>`;
       }
 
       // 装备效果
