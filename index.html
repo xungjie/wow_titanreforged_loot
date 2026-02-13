@@ -817,15 +817,17 @@
         7: "#0070dd", // 传家宝 蓝色
       };
 
-      // WoW 属性类型映射
+      // WoW 属性类型映射 (基于item 32267规律)
+      // statType 4 = 力量, statType 7 = 耐力, statType 3 = 敏捷, statType 5 = 精神等
       const statTypeMap = {
         1: '力量',
         2: '敏捷',
-        3: '体力',
-        4: '防御等级',
-        5: '躲闪等级',
-        6: '招架等级',
-        7: '格挡值',
+        3: '敏捷',
+        4: '力量',
+        5: '精神',
+        6: '精神',
+        7: '耐力',
+        8: '体力',
         12: '智力',
         13: '精神',
         14: '命中等级',
@@ -835,6 +837,14 @@
         18: '护甲穿透',
         21: '急速等级',
         25: '护盾值',
+      };
+
+      // 插槽颜色映射
+      const socketColorMap = {
+        1: '红色',
+        2: '红色',
+        4: '蓝色',
+        8: '紫色/元素',
       };
 
       const qualityColor = qualityColors[item.quality] || "#ffffff";
@@ -960,6 +970,23 @@
 
       if (resistHtml || statTypeHtml) {
         html += resistHtml + statTypeHtml;
+      }
+
+      // 插槽信息
+      let socketHtml = '';
+      for (let i = 1; i <= 3; i++) {
+        const socketColor = item[`socketColor${i}`];
+        if (socketColor) {
+          const colorName = socketColorMap[socketColor] || `插槽类型${socketColor}`;
+          socketHtml += `<div class="tooltip-row">
+            <div class="tooltip-label">插槽${i}:</div>
+            <div class="tooltip-value">${colorName}</div>
+          </div>`;
+        }
+      }
+      
+      if (socketHtml) {
+        html += `<div class="tooltip-divider"></div>` + socketHtml;
       }
 
       // 装备效果
