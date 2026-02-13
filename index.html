@@ -276,7 +276,7 @@
         </div>
         <div class="control-group">
           <label class="control-label" for="instanceSelect">按副本筛选</label>
-          <select id="instanceSelect" class="control-select" style="display: none;">
+          <select id="instanceSelect" class="control-select">
             <option value="">全部副本</option>
             <!-- 动态填充 -->
           </select>
@@ -541,88 +541,99 @@
       tbody.appendChild(loadingTr);
 
       try {
-        const res = await fetch("Altasloot/AtlasLootMY_Data/source.lua");
-        const text = await res.text();
+        // 从所有源文件加载数据
+        const sourceFiles = [
+          "Altasloot/AtlasLootMY_Data/source.lua",
+          "Altasloot/AtlasLootMY_Data/source-tbc.lua",
+          "Altasloot/AtlasLootMY_Data/source-wrath.lua"
+        ];
+        
+        let allParsed = [];
+        let allAtlasIds = [];
 
-        // 解析 ["AtlasLootIDs"] 区块，拿到副本 ID 列表
-        const atlasIdsMatch = text.match(/\["AtlasLootIDs"\]\s*=\s*\{([\s\S]*?)\}/);
-        const atlasIds = [];
-        if (atlasIdsMatch) {
-          const idsBody = atlasIdsMatch[1];
-          let m;
-          const regex = /"([^"]+)"/g;
-          while ((m = regex.exec(idsBody)) !== null) {
-            atlasIds.push(m[1]);
+        for (const sourceFile of sourceFiles) {
+          try {
+            const res = await fetch(sourceFile);
+            const text = await res.text();
+
+            // 解析 ["AtlasLootIDs"] 区块
+            const atlasIdsMatch = text.match(/\["AtlasLootIDs"\]\s*=\s*\{([\s\S]*?)\}/);
+            const currentAtlasIds = [];
+            if (atlasIdsMatch) {
+              const idsBody = atlasIdsMatch[1];
+              let m;
+              const regex = /"([^"]+)"/g;
+              while ((m = regex.exec(idsBody)) !== null) {
+                currentAtlasIds.push(m[1]);
+              }
+            }
+            allAtlasIds = allAtlasIds.concat(currentAtlasIds);
+
+            // 解析 ["ItemData"]
+            const itemDataMatch = text.match(/\["ItemData"\]\s*=\s*\{([\s\S]*?)\n\}/);
+            if (!itemDataMatch) continue;
+            
+            const itemBody = itemDataMatch[1];
+            const lineRegex = /\[(\d+)\]\s*=\s*(\{[\s\S]*?\}),?/g;
+            let match;
+
+            while ((match = lineRegex.exec(itemBody)) !== null) {
+              const itemId = parseInt(match[1], 10);
+              const raw = match[2].trim();
+
+              let tupleText = raw;
+              if (tupleText.startsWith("{{")) {
+                const firstTuple = tupleText.match(/\{\s*([^{}]+?)\s*[,}]/);
+                if (!firstTuple) continue;
+                tupleText = "{" + firstTuple[1] + "}";
+              }
+
+              const nums = [];
+              const numRegex = /(-?\d+)/g;
+              let nm;
+              while ((nm = numRegex.exec(tupleText)) !== null) {
+                nums.push(parseInt(nm[1], 10));
+              }
+
+              if (nums.length < 2) continue;
+
+              const instIdx = nums[0];
+              const bossIdx = nums[1];
+              const instanceKey =
+                instIdx >= 1 && instIdx <= currentAtlasIds.length
+                  ? currentAtlasIds[instIdx - 1]
+                  : `UnknownInstance#${instIdx}`;
+
+              allParsed.push({
+                instance: instanceKey,
+                boss: `Boss #${bossIdx}`,
+                itemId,
+              });
+            }
+          } catch (e) {
+            console.warn(`加载 ${sourceFile} 失败:`, e);
           }
         }
-        instanceList = atlasIds;
 
-        // 填充副本下拉框
+        instanceList = allAtlasIds;
+
+        // 填充副本下拉框（显示允许的副本）
         const instanceSelect = document.getElementById("instanceSelect");
         if (instanceSelect) {
           instanceSelect.innerHTML = '<option value="">全部副本</option>';
-          atlasIds.forEach((instance) => {
-            const option = document.createElement("option");
-            option.value = instance;
-            option.textContent = instance;
-            instanceSelect.appendChild(option);
-          });
-        }
-
-        // 解析 ["ItemData"] 主体
-        const itemDataMatch = text.match(/\["ItemData"\]\s*=\s*\{([\s\S]*?)\n\}/);
-        if (!itemDataMatch) {
-          throw new Error("未在 source.lua 中找到 ItemData 块");
-        }
-        const itemBody = itemDataMatch[1];
-
-        const lineRegex = /\[(\d+)\]\s*=\s*(\{[\s\S]*?\}),?/g;
-        let match;
-        const parsed = [];
-
-        while ((match = lineRegex.exec(itemBody)) !== null) {
-          const itemId = parseInt(match[1], 10);
-          const raw = match[2].trim();
-
-          // 这里只做非常粗略的结构解析：
-          // 1. {8,9,1} 这种：取第一个数字做副本下标，第二个数字做 Boss 编号
-          // 2. {{10,3,1},{11,2,1}} 这种：取第一组
-          let tupleText = raw;
-          if (tupleText.startsWith("{{")) {
-            // 形如 {{10,3,1},{11,2,1}}
-            const firstTuple = tupleText.match(/\{\s*([^{}]+?)\s*[,}]/);
-            if (!firstTuple) continue;
-            tupleText = "{" + firstTuple[1] + "}";
-          }
-
-          const nums = [];
-          const numRegex = /(-?\d+)/g;
-          let nm;
-          while ((nm = numRegex.exec(tupleText)) !== null) {
-            nums.push(parseInt(nm[1], 10));
-          }
-
-          if (nums.length < 2) continue;
-
-          const instIdx = nums[0]; // Lua 从 1 开始
-          const bossIdx = nums[1];
-          const instanceKey =
-            instIdx >= 1 && instIdx <= atlasIds.length
-              ? atlasIds[instIdx - 1]
-              : `UnknownInstance#${instIdx}`;
-
-          parsed.push({
-            instance: instanceKey,
-            boss: `Boss #${bossIdx}`,
-            itemId,
+          ALLOWED_INSTANCES.forEach((instance) => {
+            if (allAtlasIds.includes(instance)) {
+              const option = document.createElement("option");
+              option.value = instance;
+              option.textContent = instance;
+              instanceSelect.appendChild(option);
+            }
           });
         }
 
         // 过滤只保留允许的副本
-        const filteredParsed = parsed.filter(row => 
-          ALLOWED_INSTANCES.includes(row.instance.replace(/['\s]/g, match => 
-            match === "'" ? "'" : match
-          ))
+        const filteredParsed = allParsed.filter(row => 
+          ALLOWED_INSTANCES.includes(row.instance)
         );
 
         // 先创建基础数据结构
