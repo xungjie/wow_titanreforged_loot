@@ -817,6 +817,26 @@
         7: "#0070dd", // 传家宝 蓝色
       };
 
+      // WoW 属性类型映射
+      const statTypeMap = {
+        1: '力量',
+        2: '敏捷',
+        3: '体力',
+        4: '防御等级',
+        5: '躲闪等级',
+        6: '招架等级',
+        7: '格挡值',
+        12: '智力',
+        13: '精神',
+        14: '命中等级',
+        15: '暴击等级',
+        16: '攻击强度',
+        17: '法术强度',
+        18: '护甲穿透',
+        21: '急速等级',
+        25: '护盾值',
+      };
+
       const qualityColor = qualityColors[item.quality] || "#ffffff";
 
       let html = `
@@ -895,28 +915,51 @@
         </div>`;
       }
 
-      // 属性
-      const stats = [
-        { key: 'strength', name: '力量', icon: '⚔' },
-        { key: 'stamina', name: '体力', icon: '❤' },
-        { key: 'intellect', name: '智力', icon: '✦' },
-        { key: 'spirit', name: '精神', icon: '☮' },
-        { key: 'agility', name: '敏捷', icon: '⚡' },
+      // 抗性属性
+      const resistances = [
+        { key: 'fireRes', name: '火焰抗性' },
+        { key: 'frostRes', name: '冰霜抗性' },
+        { key: 'shadowRes', name: '暗影抗性' },
+        { key: 'arcaneRes', name: '秘法抗性' },
+        { key: 'natureRes', name: '自然抗性' },
+        { key: 'holyRes', name: '神圣抗性' },
       ];
 
-      let statsHtml = '';
-      stats.forEach(stat => {
-        const value = item[stat.key];
+      let resistHtml = '';
+      resistances.forEach(res => {
+        const value = item[res.key];
         if (value && value > 0) {
-          statsHtml += `<div class="tooltip-row">
-            <div class="tooltip-label">${stat.name}:</div>
+          resistHtml += `<div class="tooltip-row">
+            <div class="tooltip-label">${res.name}:</div>
             <div class="tooltip-value tooltip-stat">+${value}</div>
           </div>`;
         }
       });
 
-      if (statsHtml) {
-        html += statsHtml;
+      // StatType 属性（来自statType/statValue字段）
+      let statTypeHtml = '';
+      for (let i = 1; i <= 7; i++) {
+        const statType = item[`statType${i}`];
+        const statValue = item[`statValue${i}`];
+        if (statType && statValue && statValue > 0) {
+          const statName = statTypeMap[statType] || `Unknown Stat ${statType}`;
+          statTypeHtml += `<div class="tooltip-row">
+            <div class="tooltip-label">${statName}:</div>
+            <div class="tooltip-value tooltip-stat">+${statValue}</div>
+          </div>`;
+        }
+      }
+
+      // 阻止 (Block)
+      if (item.block && item.block > 0) {
+        statTypeHtml += `<div class="tooltip-row">
+          <div class="tooltip-label">格挡:</div>
+          <div class="tooltip-value tooltip-stat">+${item.block}</div>
+        </div>`;
+      }
+
+      if (resistHtml || statTypeHtml) {
+        html += resistHtml + statTypeHtml;
       }
 
       // 装备效果
