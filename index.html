@@ -276,7 +276,7 @@
         </div>
         <div class="control-group">
           <label class="control-label" for="instanceSelect">按副本筛选</label>
-          <select id="instanceSelect" class="control-select">
+          <select id="instanceSelect" class="control-select" style="display: none;">
             <option value="">全部副本</option>
             <!-- 动态填充 -->
           </select>
@@ -329,6 +329,9 @@
     let lootData = [];
     let instanceList = []; // 副本列表
     const itemCache = {}; // 缓存物品信息
+    
+    // 只显示这些副本
+    const ALLOWED_INSTANCES = ['MoltenCore', 'Zul\'Gurub', 'TheEyeOfEternity'];
 
     // 通过 TitanReforged API 获取物品信息
     async function fetchItemInfo(itemId) {
@@ -615,8 +618,15 @@
           });
         }
 
+        // 过滤只保留允许的副本
+        const filteredParsed = parsed.filter(row => 
+          ALLOWED_INSTANCES.includes(row.instance.replace(/['\s]/g, match => 
+            match === "'" ? "'" : match
+          ))
+        );
+
         // 先创建基础数据结构
-        lootData = parsed.map((row) => ({
+        lootData = filteredParsed.map((row) => ({
           instance: row.instance,
           boss: row.boss,
           itemId: row.itemId,
