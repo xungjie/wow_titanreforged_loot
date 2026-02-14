@@ -308,6 +308,18 @@
       line-height: 1.4;
     }
 
+    /* Socket badge */
+    .socket-badge {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      margin-right: 6px;
+      border-radius: 2px;
+      vertical-align: middle;
+      border: 1px solid rgba(0,0,0,0.45);
+    }
+
+
     @media (max-width: 768px) {
       .panel {
         padding: 16px 14px 20px;
@@ -973,19 +985,28 @@
         html += resistHtml + statTypeHtml;
       }
 
-      // 插槽信息
+      // 插槽信息（带彩色徽章）
       let socketHtml = '';
       for (let i = 1; i <= 3; i++) {
         const socketColor = item[`socketColor${i}`];
         if (socketColor) {
           const colorName = socketColorMap[socketColor] || `插槽类型${socketColor}`;
+          // 颜色样式（多彩用渐变）
+          const colorStyleMap = {
+            1: 'background: linear-gradient(45deg, #e74c3c, #f1c40f, #3498db);', // 多彩
+            2: 'background: #e74c3c;', // 红色
+            4: 'background: #f1c40f;', // 黄色
+            8: 'background: #3498db;', // 蓝色
+          };
+          const badgeStyle = colorStyleMap[socketColor] || 'background: #777;';
+
           socketHtml += `<div class="tooltip-row">
             <div class="tooltip-label">插槽${i}:</div>
-            <div class="tooltip-value">${colorName}</div>
+            <div class="tooltip-value"><span class="socket-badge" style="${badgeStyle}"></span>${colorName}</div>
           </div>`;
         }
       }
-      
+
       if (socketHtml) {
         html += `<div class="tooltip-divider"></div>` + socketHtml;
       }
