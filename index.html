@@ -376,6 +376,15 @@
           </select>
         </div>
         <div class="control-group">
+          <label class="control-label" for="phaseSelect">按 Phase 筛选</label>
+          <select id="phaseSelect" class="control-select">
+            <option value="">全部 Phase</option>
+            <option value="1">Phase 1 (MC)</option>
+            <option value="2">Phase 2 (SCC, TK)</option>
+            <option value="3">Phase 3 (Naxx, 黑曜石, 永恒)</option>
+          </select>
+        </div>
+        <div class="control-group">
           <label class="control-label" for="classSelect">按职业筛选可用掉落</label>
           <select id="classSelect" class="control-select">
             <option value="">全部职业</option>
@@ -705,11 +714,13 @@
     const searchInput = document.getElementById("searchInput");
     const classSelect = document.getElementById("classSelect");
     const instanceSelect = document.getElementById("instanceSelect");
+    const phaseSelect = document.getElementById("phaseSelect");
 
     function renderTable() {
       const keyword = searchInput.value.trim().toLowerCase();
       const selectedClass = classSelect.value;
       const selectedInstance = instanceSelect.value;
+      const selectedPhase = phaseSelect.value;
 
       tbody.innerHTML = "";
 
@@ -723,6 +734,11 @@
         const instanceMatch =
           !selectedInstance || item.instance === selectedInstance;
 
+        const phaseMatch =
+          !selectedPhase ||
+          (INSTANCE_DATA[item.instance] && 
+           INSTANCE_DATA[item.instance].phase === parseInt(selectedPhase));
+
         const classMatch =
           !selectedClass ||
           (Array.isArray(item.classes) &&
@@ -730,7 +746,7 @@
               c.toLowerCase().includes(selectedClass.toLowerCase())
             ));
 
-        return nameMatch && instanceMatch && classMatch;
+        return nameMatch && instanceMatch && phaseMatch && classMatch;
       });
 
       // 排序
@@ -771,37 +787,29 @@
         tr.appendChild(tdBoss);
 
         const tdItem = document.createElement("td");
-        const itemLink = document.createElement("a");
+        const itemSpan = document.createElement("span");
         const itemId = item.itemId;
 
-        itemLink.textContent = item.itemName;
-        itemLink.classList.add("item-name");
-        itemLink.classList.add("tooltip-trigger");
-        itemLink.dataset.itemId = itemId;
-        itemLink.href = itemId
-          ? `https://wlk.scarlet5.com/?search=${itemId}`
-          : "javascript:void(0)";
-        itemLink.target = "_blank";
-
-        // Wowhead tooltip 联动（依赖下面引入的 power.js）
-        if (itemId) {
-          itemLink.setAttribute("data-wowhead", `item=${itemId}`);
-        }
+        itemSpan.textContent = item.itemName;
+        itemSpan.classList.add("item-name");
+        itemSpan.classList.add("tooltip-trigger");
+        itemSpan.dataset.itemId = itemId;
+        itemSpan.style.cursor = "help";
 
         // 根据品质添加样式
         if (item.quality === "epic") {
-          itemLink.classList.add("item-epic");
+          itemSpan.classList.add("item-epic");
         } else if (item.quality === "rare") {
-          itemLink.classList.add("item-rare");
+          itemSpan.classList.add("item-rare");
         } else if (item.quality === "uncommon") {
-          itemLink.classList.add("item-uncommon");
+          itemSpan.classList.add("item-uncommon");
         } else if (item.quality === "common") {
-          itemLink.classList.add("item-common");
+          itemSpan.classList.add("item-common");
         } else if (item.quality === "poor") {
-          itemLink.classList.add("item-poor");
+          itemSpan.classList.add("item-poor");
         }
 
-        tdItem.appendChild(itemLink);
+        tdItem.appendChild(itemSpan);
         tr.appendChild(tdItem);
 
         const tdQuality = document.createElement("td");
@@ -851,6 +859,9 @@
     classSelect.addEventListener("change", renderTable);
     if (instanceSelect) {
       instanceSelect.addEventListener("change", renderTable);
+    }
+    if (phaseSelect) {
+      phaseSelect.addEventListener("change", renderTable);
     }
 
     // 表头排序点击事件
