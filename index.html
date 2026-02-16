@@ -149,6 +149,16 @@
       border-right: 1px solid rgba(120, 95, 45, 0.8);
     }
 
+    th.sortable-header {
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.15s;
+    }
+
+    th.sortable-header:hover {
+      background-color: rgba(80, 60, 30, 0.4);
+    }
+
     th:last-child,
     td:last-child {
       border-right: none;
@@ -387,12 +397,12 @@
         <table>
           <thead>
             <tr>
-              <th>副本</th>
-              <th>Boss</th>
-              <th>物品名称</th>
-              <th>品质</th>
-              <th>物品等级</th>
-              <th>适用职业</th>
+              <th class="sortable-header" data-column="instance">副本 ↕</th>
+              <th class="sortable-header" data-column="boss">Boss ↕</th>
+              <th class="sortable-header" data-column="itemName">物品名称 ↕</th>
+              <th class="sortable-header" data-column="quality">品质 ↕</th>
+              <th class="sortable-header" data-column="itemLevel">物品等级 ↕</th>
+              <th class="sortable-header" data-column="classes">适用职业 ↕</th>
               <th>备注</th>
             </tr>
           </thead>
@@ -417,9 +427,19 @@
     let instanceList = []; // 副本列表
     let itemsDatabase = {}; // 本地物品数据库
     const itemCache = {}; // 缓存物品信息
+    let sortColumn = 'instance'; // 当前排序列
+    let sortOrder = 'asc'; // 排序顺序（asc/desc）
     
-    // 只显示这些副本
-    const ALLOWED_INSTANCES = ['MoltenCore', 'SerpentshrineCavern', 'TempestKeep'];
+    // 副本和 Phase 分类
+    const INSTANCE_DATA = {
+      'MoltenCore': { phase: 1, phaseName: 'Phase 1' },
+      'SerpentshrineCavern': { phase: 2, phaseName: 'Phase 2' },
+      'TempestKeep': { phase: 2, phaseName: 'Phase 2' },
+      'NaxxramasWrath': { phase: 3, phaseName: 'Phase 3' },
+      'ObsidianSanctum': { phase: 3, phaseName: 'Phase 3' },
+      'TheEyeOfEternity': { phase: 3, phaseName: 'Phase 3' },
+    };
+    const ALLOWED_INSTANCES = Object.keys(INSTANCE_DATA);
 
     // 加载本地物品数据库
     async function loadItemsDatabase() {
@@ -713,11 +733,35 @@
         return nameMatch && instanceMatch && classMatch;
       });
 
+      // 排序
+      filtered.sort((a, b) => {
+        let aVal = a[sortColumn];
+        let bVal = b[sortColumn];
+        
+        // 处理 Phase 排序（如果按 instance 排，按 phase 排序）
+        if (sortColumn === 'instance') {
+          aVal = INSTANCE_DATA[a.instance]?.phase || 999;
+          bVal = INSTANCE_DATA[b.instance]?.phase || 999;
+        }
+        
+        if (typeof aVal === 'string') aVal = aVal.toLowerCase();
+        if (typeof bVal === 'string') bVal = bVal.toLowerCase();
+        
+        if (aVal < bVal) return sortOrder === 'asc' ? -1 : 1;
+        if (aVal > bVal) return sortOrder === 'asc' ? 1 : -1;
+        return 0;
+      });
+
       filtered.forEach((item) => {
         const tr = document.createElement("tr");
 
         const tdInstance = document.createElement("td");
-        tdInstance.textContent = item.instance;
+        const phaseData = INSTANCE_DATA[item.instance];
+        if (phaseData) {
+          tdInstance.innerHTML = `<span style="color: #ffd100;">[${phaseData.phaseName}]</span> ${item.instance}`;
+        } else {
+          tdInstance.textContent = item.instance;
+        }
         tdInstance.className = "instance-name";
         tr.appendChild(tdInstance);
 
@@ -798,6 +842,9 @@
         tr.appendChild(td);
         tbody.appendChild(tr);
       }
+
+      // 每次渲染后重新绑定表头事件
+      attachHeaderClickListeners();
     }
 
     searchInput.addEventListener("input", renderTable);
@@ -806,9 +853,28 @@
       instanceSelect.addEventListener("change", renderTable);
     }
 
+    // 表头排序点击事件
+    function attachHeaderClickListeners() {
+      const headers = document.querySelectorAll('th.sortable-header');
+      headers.forEach((header) => {
+        header.addEventListener('click', () => {
+          const column = header.dataset.column;
+          if (sortColumn === column) {
+            sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+          } else {
+            sortColumn = column;
+            sortOrder = 'asc';
+          }
+          renderTable();
+        });
+      });
+    }
+
     // 页面加载后，先从 Altasloot 读取数据，再渲染表格
     window.addEventListener("DOMContentLoaded", () => {
       loadAtlasLootData();
+      // 延迟绑定表头事件（确保 DOM 已准备好）
+      setTimeout(attachHeaderClickListeners, 500);
     });
 
     // Tooltip 功能
