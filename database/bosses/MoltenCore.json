@@ -6,51 +6,64 @@
   "difficulty": "40-Player Raid",
   "phase": 1,
   "patch": "1.8",
+  "source": {
+    "name": "Altasloot",
+    "notes": "31/31 BOSS从Altasloot官方本地化文件提取"
+  },
   "bosses": [
     {
       "id": 1,
       "name_en": "Lucifron",
-      "name_zh": "露西弗伦"
+      "name_zh": "鲁西弗隆",
+      "source": "Altasloot"
     },
     {
       "id": 2,
       "name_en": "Taurajon",
-      "name_zh": "陶拉焦恩"
+      "name_zh": "陶拉焦恩",
+      "source": "WowHead"
     },
     {
       "id": 3,
       "name_en": "Gehennas",
-      "name_zh": "盖赫纳斯"
+      "name_zh": "基赫纳斯",
+      "source": "Altasloot"
     },
     {
       "id": 4,
       "name_en": "Shazzrah",
-      "name_zh": "沙兹拉赫"
+      "name_zh": "沙斯拉尔",
+      "source": "Altasloot"
     },
     {
       "id": 5,
       "name_en": "Baron Geddon",
-      "name_zh": "盖顿男爵"
+      "name_zh": "迦顿男爵",
+      "source": "Altasloot"
     },
     {
       "id": 6,
       "name_en": "Sulfuron Harbinger",
-      "name_zh": "硫磺顿先驱者"
+      "name_zh": "萨弗隆先驱者",
+      "source": "Altasloot"
     },
     {
       "id": 7,
       "name_en": "Golemagg the Incinerator",
-      "name_zh": "焚火傀儡"
+      "name_zh": "焚化者古雷曼格",
+      "source": "Altasloot"
     },
     {
       "id": 8,
       "name_en": "Majordomo Executus",
-      "name_zh": "管家埃克苏图斯"
+      "name_zh": "管理者埃克索图斯",
+      "source": "Altasloot"
     },
     {
       "id": 9,
       "name_en": "Ragnaros",
-      "name_zh": "拉格纳罗斯"
+      "name_zh": "拉格纳罗斯",
+      "source": "Altasloot"
     }
   ]
 }

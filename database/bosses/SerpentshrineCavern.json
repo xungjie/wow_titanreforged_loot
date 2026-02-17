@@ -6,36 +6,46 @@
   "difficulty": "25-Player Raid",
   "phase": 2,
   "patch": "2.1",
+  "source": {
+    "name": "Altasloot",
+    "notes": "6/6 BOSS从Altasloot官方本地化文件提取"
+  },
   "bosses": [
     {
       "id": 1,
       "name_en": "Hydross the Unstable",
-      "name_zh": "不稳定的海德罗斯"
+      "name_zh": "不稳定的海度斯",
+      "source": "Altasloot"
     },
     {
       "id": 2,
       "name_en": "The Lurker Below",
-      "name_zh": "深潜者"
+      "name_zh": "鱼斯拉",
+      "source": "Altasloot"
     },
     {
       "id": 3,
       "name_en": "Leotheras the Blind",
-      "name_zh": "盲眼莱欧塞拉斯"
+      "name_zh": "盲眼者莱欧瑟拉斯",
+      "source": "Altasloot"
     },
     {
       "id": 4,
       "name_en": "Fathom-Lord Karathress",
-      "name_zh": "深洋领主卡拉瑟斯"
+      "name_zh": "深水领主卡拉瑟雷斯",
+      "source": "Altasloot"
     },
     {
       "id": 5,
       "name_en": "Morogrim Tidewalker",
-      "name_zh": "摩罗格瑞姆潮行者"
+      "name_zh": "莫洛格里·踏潮者",
+      "source": "Altasloot"
     },
     {
       "id": 6,
       "name_en": "Lady Vashj",
-      "name_zh": "瓦丝琪夫人"
+      "name_zh": "瓦丝琪",
+      "source": "Altasloot"
     }
   ]
 }

@@ -6,26 +6,34 @@
   "difficulty": "25-Player Raid",
   "phase": 2,
   "patch": "2.1",
+  "source": {
+    "name": "Mixed",
+    "notes": "3/4 Altasloot官方, 1/4 WowHead"
+  },
   "bosses": [
     {
       "id": 1,
       "name_en": "Alar the Eversoaring",
-      "name_zh": "永翔的艾拉尔"
+      "name_zh": "永翔的艾拉尔",
+      "source": "WowHead"
     },
     {
       "id": 2,
       "name_en": "Void Reaver",
-      "name_zh": "虚空掠夺者"
+      "name_zh": "空灵机甲",
+      "source": "Altasloot"
     },
     {
       "id": 3,
       "name_en": "Solarian",
-      "name_zh": "索拉瑞恩"
+      "name_zh": "索拉瑞恩",
+      "source": "WowHead"
     },
     {
       "id": 4,
       "name_en": "Kael'thas Sunstrider",
-      "name_zh": "凯尔萨斯·阳羽"
+      "name_zh": "凯尔萨斯·逐日者",
+      "source": "Altasloot"
     }
   ]
 }

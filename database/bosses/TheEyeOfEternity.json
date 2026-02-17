@@ -6,11 +6,16 @@
   "difficulty": "10/25-Player Raid",
   "phase": 3,
   "patch": "3.0",
+  "source": {
+    "name": "Altasloot",
+    "notes": "1/1 BOSS从Altasloot官方本地化文件提取"
+  },
   "bosses": [
     {
       "id": 1,
       "name_en": "Malygos",
-      "name_zh": "玛里苟斯"
+      "name_zh": "玛里苟斯",
+      "source": "Altasloot"
     }
   ]
 }

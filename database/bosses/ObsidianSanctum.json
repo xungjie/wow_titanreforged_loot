@@ -6,26 +6,34 @@
   "difficulty": "10/25-Player Raid",
   "phase": 3,
   "patch": "3.0",
+  "source": {
+    "name": "Mixed",
+    "notes": "1/4 Altasloot官方, 3/4 WowHead"
+  },
   "bosses": [
     {
       "id": 1,
-      "name_en": "Sartharion the Onyx Dragon",
-      "name_zh": "玛瑞苟斯（黑龙之王）"
+      "name_en": "Sartharion",
+      "name_zh": "萨塔里奥",
+      "source": "Altasloot"
     },
     {
       "id": 2,
       "name_en": "Tenebron",
-      "name_zh": "坦尼布龙"
+      "name_zh": "坦尼布龙",
+      "source": "WowHead"
     },
     {
       "id": 3,
       "name_en": "Shadron",
-      "name_zh": "沙德龙"
+      "name_zh": "沙德龙",
+      "source": "WowHead"
     },
     {
       "id": 4,
       "name_en": "Vesperon",
-      "name_zh": "维斯佩龙"
+      "name_zh": "维斯佩龙",
+      "source": "WowHead"
     }
   ]
 }

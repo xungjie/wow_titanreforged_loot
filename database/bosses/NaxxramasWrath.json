@@ -1,88 +1,105 @@
 {
   "id": "4",
   "name_en": "Naxxramas",
-  "name_zh": "冰冠堡垒之战 - 奥杜尔",
+  "name_zh": "冰冠堡垒",
   "zone_id": 3456,
   "difficulty": "10/25-Player Raid",
   "phase": 3,
   "patch": "3.0",
+  "source": {
+    "name": "Altasloot",
+    "notes": "13/13 BOSS从Altasloot官方本地化文件提取"
+  },
   "bosses": [
     {
       "id": 1,
       "name_en": "Anub'Rekhan",
-      "name_zh": "阿努布雷克汗",
-      "quarter": "Arachnid Quarter"
+      "name_zh": "阿努布雷坎",
+      "quarter": "Arachnid Quarter",
+      "source": "Altasloot"
     },
     {
       "id": 2,
       "name_en": "Grand Widow Faerlina",
-      "name_zh": "大寡妇法琳娜",
-      "quarter": "Arachnid Quarter"
+      "name_zh": "黑女巫法琳娜",
+      "quarter": "Arachnid Quarter",
+      "source": "Altasloot"
     },
     {
       "id": 3,
       "name_en": "Maexxna",
-      "name_zh": "玛克丝娜",
-      "quarter": "Arachnid Quarter"
+      "name_zh": "迈克斯纳",
+      "quarter": "Arachnid Quarter",
+      "source": "Altasloot"
     },
     {
       "id": 4,
       "name_en": "Noth the Plaguebringer",
       "name_zh": "瘟疫使者诺斯",
-      "quarter": "Plague Quarter"
+      "quarter": "Plague Quarter",
+      "source": "Altasloot"
     },
     {
       "id": 5,
       "name_en": "Heigan the Unclean",
-      "name_zh": "污秽的海根",
-      "quarter": "Plague Quarter"
+      "name_zh": "肮脏的希尔盖",
+      "quarter": "Plague Quarter",
+      "source": "Altasloot"
     },
     {
       "id": 6,
       "name_en": "Loatheb",
-      "name_zh": "厌恶之心",
-      "quarter": "Plague Quarter"
+      "name_zh": "洛欧塞布",
+      "quarter": "Plague Quarter",
+      "source": "Altasloot"
     },
     {
       "id": 7,
-      "name_en": "Sapphiron",
-      "name_zh": "蓝宝石",
-      "quarter": "Frost Wing"
+      "name_en": "Patchwerk",
+      "name_zh": "帕奇维克",
+      "quarter": "Construct Quarter",
+      "source": "Altasloot"
     },
     {
       "id": 8,
-      "name_en": "Patchwerk",
-      "name_zh": "缝合怪",
-      "quarter": "Construct Quarter"
+      "name_en": "Grobbulus",
+      "name_zh": "格罗布鲁斯",
+      "quarter": "Construct Quarter",
+      "source": "Altasloot"
     },
     {
       "id": 9,
-      "name_en": "Grobbulus",
-      "name_zh": "葛罗布鲁斯",
-      "quarter": "Construct Quarter"
+      "name_en": "Gluth",
+      "name_zh": "格拉斯",
+      "quarter": "Construct Quarter",
+      "source": "Altasloot"
     },
     {
       "id": 10,
-      "name_en": "Gluth",
-      "name_zh": "格鲁斯",
-      "quarter": "Construct Quarter"
+      "name_en": "Thaddius",
+      "name_zh": "塔迪乌斯",
+      "quarter": "Construct Quarter",
+      "source": "Altasloot"
     },
     {
       "id": 11,
-      "name_en": "Thaddius",
-      "name_zh": "撒迪乌斯",
-      "quarter": "Construct Quarter"
+      "name_en": "Sapphiron",
+      "name_zh": "萨菲隆",
+      "quarter": "Frost Wing",
+      "source": "Altasloot"
     },
     {
       "id": 12,
       "name_en": "Blood Prince Council",
-      "name_zh": "血王子议会",
-      "quarter": "Blood Wing"
+      "name_zh": "鲜血王子议会",
+      "quarter": "Blood Wing",
+      "source": "Altasloot"
     },
     {
       "id": 13,
       "name_en": "Kel'Thuzad",
-      "name_zh": "克尔苏加德"
+      "name_zh": "克尔苏加德",
+      "source": "Altasloot"
     }
   ]
 }
