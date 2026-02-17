@@ -435,9 +435,11 @@
     let lootData = [];
     let instanceList = []; // 副本列表
     let itemsDatabase = {}; // 本地物品数据库
+    let bossMappingData = {}; // BOSS映射数据
     const itemCache = {}; // 缓存物品信息
     let sortColumn = 'instance'; // 当前排序列
     let sortOrder = 'asc'; // 排序顺序（asc/desc）
+    let languageMode = 'zh'; // 语言模式（'zh' 或 'en'）
     
     // 副本和 Phase 分类
     const INSTANCE_DATA = {
@@ -463,6 +465,40 @@
         console.warn('Failed to load local items database:', e);
       }
       return false;
+    }
+
+    // 加载BOSS映射数据
+    async function loadBossMapping() {
+      try {
+        const response = await fetch('database/boss_mapping.json');
+        if (response.ok) {
+          bossMappingData = await response.json();
+          console.log(`✅ Loaded boss mapping for ${Object.keys(bossMappingData).length} raids`);
+          return true;
+        }
+      } catch (e) {
+        console.warn('Failed to load boss mapping:', e);
+      }
+      return false;
+    }
+
+    // 获取BOSS名字
+    function getBossName(instanceName, bossNumber) {
+      const bossNum = parseInt(bossNumber) || parseInt(bossNumber.toString().match(/\d+/)?.[0]) || 1;
+      
+      if (!bossMappingData[instanceName]) {
+        return `Boss #${bossNum}`;
+      }
+      
+      const raid = bossMappingData[instanceName];
+      const bossData = raid.bosses.find(b => b.id === bossNum);
+      
+      if (!bossData) {
+        return `Boss #${bossNum}`;
+      }
+      
+      // 根据语言模式返回不同的boss名字
+      return languageMode === 'en' ? bossData.name_en : bossData.name_zh;
     }
 
     // 从本地数据库获取物品信息
@@ -560,6 +596,9 @@
         if (!dbLoaded) {
           throw new Error("无法加载本地物品数据库");
         }
+
+        // 加载BOSS映射
+        await loadBossMapping();
 
         loadingTd.textContent = "正在从 Altasloot 读取数据，请稍候……";
         // 从所有源文件加载数据
@@ -725,10 +764,12 @@
       tbody.innerHTML = "";
 
       const filtered = lootData.filter((item) => {
+        const bossName = getBossName(item.instance, item.boss);
         const nameMatch =
           !keyword ||
           item.itemName.toLowerCase().includes(keyword) ||
           item.boss.toLowerCase().includes(keyword) ||
+          bossName.toLowerCase().includes(keyword) ||
           item.instance.toLowerCase().includes(keyword);
 
         const instanceMatch =
@@ -782,7 +823,8 @@
         tr.appendChild(tdInstance);
 
         const tdBoss = document.createElement("td");
-        tdBoss.textContent = item.boss;
+        const bossName = getBossName(item.instance, item.boss);
+        tdBoss.textContent = bossName;
         tdBoss.className = "boss-name";
         tr.appendChild(tdBoss);
 
