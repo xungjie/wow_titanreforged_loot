@@ -1,0 +1,16 @@
+{
+  "id": "6",
+  "name_en": "The Eye of Eternity",
+  "name_zh": "永恒之眼",
+  "zone_id": 616,
+  "difficulty": "10/25-Player Raid",
+  "phase": 3,
+  "patch": "3.0",
+  "bosses": [
+    {
+      "id": 1,
+      "name_en": "Malygos",
+      "name_zh": "玛里苟斯"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "3",
+  "name_en": "The Eye",
+  "name_zh": "风暴风眼",
+  "zone_id": 564,
+  "difficulty": "25-Player Raid",
+  "phase": 2,
+  "patch": "2.1",
+  "bosses": [
+    {
+      "id": 1,
+      "name_en": "Alar the Eversoaring",
+      "name_zh": "永翔的艾拉尔"
+    },
+    {
+      "id": 2,
+      "name_en": "Void Reaver",
+      "name_zh": "虚空掠夺者"
+    },
+    {
+      "id": 3,
+      "name_en": "Solarian",
+      "name_zh": "索拉瑞恩"
+    },
+    {
+      "id": 4,
+      "name_en": "Kael'thas Sunstrider",
+      "name_zh": "凯尔萨斯·阳羽"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "id": "1",
+  "name_en": "Molten Core",
+  "name_zh": "熔火之心",
+  "zone_id": 409,
+  "difficulty": "40-Player Raid",
+  "phase": 1,
+  "patch": "1.8",
+  "bosses": [
+    {
+      "id": 1,
+      "name_en": "Lucifron",
+      "name_zh": "露西弗伦"
+    },
+    {
+      "id": 2,
+      "name_en": "Taurajon",
+      "name_zh": "陶拉焦恩"
+    },
+    {
+      "id": 3,
+      "name_en": "Gehennas",
+      "name_zh": "盖赫纳斯"
+    },
+    {
+      "id": 4,
+      "name_en": "Shazzrah",
+      "name_zh": "沙兹拉赫"
+    },
+    {
+      "id": 5,
+      "name_en": "Baron Geddon",
+      "name_zh": "盖顿男爵"
+    },
+    {
+      "id": 6,
+      "name_en": "Sulfuron Harbinger",
+      "name_zh": "硫磺顿先驱者"
+    },
+    {
+      "id": 7,
+      "name_en": "Golemagg the Incinerator",
+      "name_zh": "焚火傀儡"
+    },
+    {
+      "id": 8,
+      "name_en": "Majordomo Executus",
+      "name_zh": "管家埃克苏图斯"
+    },
+    {
+      "id": 9,
+      "name_en": "Ragnaros",
+      "name_zh": "拉格纳罗斯"
+    }
+  ]
+}

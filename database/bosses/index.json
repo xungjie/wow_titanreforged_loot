@@ -1,0 +1,20 @@
+{
+  "raids": [
+    "MoltenCore",
+    "SerpentshrineCavern",
+    "TempestKeep",
+    "NaxxramasWrath",
+    "ObsidianSanctum",
+    "TheEyeOfEternity"
+  ],
+  "files": {
+    "MoltenCore": "MoltenCore.json",
+    "SerpentshrineCavern": "SerpentshrineCavern.json",
+    "TempestKeep": "TempestKeep.json",
+    "NaxxramasWrath": "NaxxramasWrath.json",
+    "ObsidianSanctum": "ObsidianSanctum.json",
+    "TheEyeOfEternity": "TheEyeOfEternity.json"
+  },
+  "total_bosses": 37,
+  "total_raids": 6
+}

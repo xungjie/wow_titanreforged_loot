@@ -1,0 +1,31 @@
+{
+  "id": "5",
+  "name_en": "The Obsidian Sanctum",
+  "name_zh": "黑曜石圣殿",
+  "zone_id": 615,
+  "difficulty": "10/25-Player Raid",
+  "phase": 3,
+  "patch": "3.0",
+  "bosses": [
+    {
+      "id": 1,
+      "name_en": "Sartharion the Onyx Dragon",
+      "name_zh": "玛瑞苟斯（黑龙之王）"
+    },
+    {
+      "id": 2,
+      "name_en": "Tenebron",
+      "name_zh": "坦尼布龙"
+    },
+    {
+      "id": 3,
+      "name_en": "Shadron",
+      "name_zh": "沙德龙"
+    },
+    {
+      "id": 4,
+      "name_en": "Vesperon",
+      "name_zh": "维斯佩龙"
+    }
+  ]
+}
